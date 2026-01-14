@@ -102,14 +102,19 @@
 
     /* Стилизация новых 3D стеклянных кнопок */
     .btn-neon-3d {
+        /* Стеклянная база */
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
+        
+        /* 3D эффект и тени */
         box-shadow: 
             inset 2px 2px 5px rgba(255, 255, 255, 0.1),
             inset -2px -2px 5px rgba(0, 0, 0, 0.3),
             0 5px 15px rgba(0,0,0,0.3);
+        
+        /* Анимация дыхания */
         animation: neonButtonBreathing 5s infinite ease-in-out;
         position: relative;
         overflow: hidden;
@@ -118,9 +123,10 @@
 
     .btn-neon-3d:hover {
         transform: translateY(-3px);
-        animation-duration: 2s; 
+        animation-duration: 2s; /* Ускоряем дыхание при наведении */
     }
 
+    /* Эффект блика на стекле */
     .btn-neon-3d::before {
         content: '';
         position: absolute;
@@ -136,6 +142,7 @@
     .btn-neon-3d:hover::before {
         left: 125%;
     }
+
 
     /* --- СТРУКТУРА ЭКРАНОВ --- */
     .screen {
@@ -210,7 +217,7 @@
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
     }
 
-    /* --- КНОПКИ --- */
+    /* --- КНОПКИ (Базовые стили) --- */
     .btn {
         display: flex;
         justify-content: center;
@@ -231,6 +238,7 @@
         color: white;
     }
     
+    /* Старая кнопка primary (оставлена для входа) */
     .btn-primary {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
         box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
@@ -238,6 +246,39 @@
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-lang {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+        font-weight: 500;
+        justify-content: flex-start;
+        padding-left: 30px;
+        position: relative;
+    }
+
+    .btn-lang:hover {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .flag-icon {
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    .btn-outline:hover {
+        border-color: var(--primary-blue);
+        color: white;
+        background: rgba(59, 130, 246, 0.1);
     }
 
     .error-msg {
@@ -334,6 +375,22 @@
         </div>
     </div>
 
+    <div id="lang-screen" class="screen hidden">
+        <div class="glass-card fade-in">
+            <h1>ЯЗЫК / ТІЛ</h1>
+            <span class="subtitle-blue">ВЫБЕРИТЕ ИНТЕРФЕЙС</span>
+            
+            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 5px;">
+                <button class="btn btn-lang" onclick="selectLanguage('ru')">
+                    <span class="flag-icon">🇷🇺</span> РУССКИЙ ЯЗЫК
+                </button>
+                <button class="btn btn-lang" onclick="selectLanguage('kz')">
+                    <span class="flag-icon">🇰🇿</span> ҚАЗАҚ ТІЛІ
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="menu-screen" class="screen hidden">
         <div class="glass-card fade-in" style="max-width: 500px;">
             <h1 id="menuTitle">МАТЕРИАЛЫ</h1>
@@ -342,16 +399,16 @@
             <div style="margin-top: 30px;">
                 
                 <div class="menu-section">
-                    <div class="section-heading">СМОТРЕТЬ ПРЕЗЕНТАЦИЮ</div>
-                    <button class="btn btn-neon-3d" onclick="openPdfViewer()">
+                    <div class="section-heading" id="headingPres">СМОТРЕТЬ ПРЕЗЕНТАЦИЮ</div>
+                    <button id="btnPresentation" class="btn btn-neon-3d" onclick="openPdfViewer()">
                         СМОТРЕТЬ ПРЕЗЕНТАЦИЮ
                     </button>
                 </div>
 
                 <div class="menu-section" style="animation-delay: 0.5s; margin-top: 40px;">
-                    <div class="section-heading">ОБУЧЕНИЕ ПРИ ПОМОЩИ ИИ</div>
+                    <div class="section-heading" id="headingAI">ОБУЧЕНИЕ ПРИ ПОМОЩИ ИИ</div>
                     
-                    <a href="https://notebooklm.google.com/notebook/fed299a9-a888-4fce-9e8a-62d167ca7110" 
+                    <a id="btnAiLink" href="https://notebooklm.google.com/notebook/fed299a9-a888-4fce-9e8a-62d167ca7110" 
                        target="_blank" 
                        class="btn btn-neon-3d">
                        ОБУЧЕНИЕ ПРИ ПОМОЩИ ИИ
@@ -364,6 +421,9 @@
                     </a>
                 </div>
 
+                <button id="changeLangBtn" class="btn btn-outline" style="margin-top: 30px;" onclick="returnToLang()">
+                    СМЕНИТЬ ЯЗЫК
+                </button>
             </div>
             
             <div style="margin-top: 20px; font-size: 0.75rem; color: #475569;">
@@ -375,8 +435,8 @@
     <div id="pdf-screen" class="screen hidden">
         <div class="pdf-container-wrapper fade-in">
             <div class="pdf-header">
-                <span class="pdf-title">Промышленная безопасность (персонал)</span>
-                <button class="close-btn" onclick="closePdfViewer()">Закрыть</button>
+                <span class="pdf-title" id="pdfTitle">Промышленная безопасность</span>
+                <button class="close-btn" id="btnClosePdf" onclick="closePdfViewer()">Закрыть</button>
             </div>
             
             <div class="iframe-holder">
@@ -391,33 +451,107 @@
     // НАСТРОЙКИ
     // ===============================================
     const CONFIG = {
-        password: "RBVsafetyall2090",
+        password: "PBPsafetyALL2099",
         linkRu: "https://drive.google.com/file/d/14eRDiTFjIEgNEDNjdRHMJIVY5-tQDrCT/preview",
-        videoLink: "https://drive.google.com/file/d/1IkE_xSs4HJyKseR1KXnuUzM9_Gы_EI/view?usp=sharing"
+        linkKz: "https://drive.google.com/file/d/19_uS9dCORH0p0aytS1frZuhz2pH_aJJ3/preview",
+        // Ссылка на видео инструкцию
+        videoLink: "https://drive.google.com/file/d/1IkE_xSs4HJyKseR1KXnuUzM9_G_EDp/view?usp=sharing"
     };
 
-    // Элементы
+    // Элементы экранов
     const loginScreen = document.getElementById('login-screen');
+    const langScreen = document.getElementById('lang-screen');
     const menuScreen = document.getElementById('menu-screen');
     const pdfScreen = document.getElementById('pdf-screen');
     
+    // Элементы управления
     const passInput = document.getElementById('passwordInput');
     const errorMsg = document.getElementById('errorMsg');
     const pdfFrame = document.getElementById('presentation-frame');
+    
+    // Элементы для перевода (текстовые)
+    const changeLangBtn = document.getElementById('changeLangBtn');
+    const menuTitle = document.getElementById('menuTitle');
+    const menuSubtitle = document.getElementById('menuSubtitle');
+    const btnPresentation = document.getElementById('btnPresentation');
+    const btnAiLink = document.getElementById('btnAiLink');
+    
+    // НОВЫЕ элементы для перевода
+    const headingPres = document.getElementById('headingPres');
+    const headingAI = document.getElementById('headingAI');
     const btnAiVideo = document.getElementById('btnAiVideo');
+    const pdfTitle = document.getElementById('pdfTitle');
+    const btnClosePdf = document.getElementById('btnClosePdf');
 
-    // Устанавливаем ссылку на видео сразу
+
+    let currentPdfLink = "";
+
+    // Инициализация: установка ссылки на видео
     btnAiVideo.href = CONFIG.videoLink;
+
 
     // 1. Вход
     function login() {
         if (passInput.value === CONFIG.password) {
-            // При успешном входе сразу показываем меню
             loginScreen.classList.add('hidden');
-            menuScreen.classList.remove('hidden');
+            langScreen.classList.remove('hidden');
         } else {
             showError();
         }
+    }
+
+    // 2. Выбор языка и перевод интерфейса
+    function selectLanguage(lang) {
+        if (lang === 'kz') {
+            currentPdfLink = CONFIG.linkKz;
+            
+            // Перевод на Казахский
+            menuTitle.innerText = "МАТЕРИАЛДАР";
+            menuSubtitle.innerText = "ФОРМАТТЫ ТАҢДАҢЫЗ";
+            
+            headingPres.innerText = "ПРЕЗЕНТАЦИЯНЫ ҚАРАУ";
+            btnPresentation.innerText = "ПРЕЗЕНТАЦИЯНЫ ҚАРАУ";
+            
+            headingAI.innerText = "ЖИ-МЕН ОҚЫТУ";
+            btnAiLink.innerText = "ЖАСАНДЫ ИНТЕЛЛЕКТПЕН ОҚУ";
+            btnAiVideo.innerText = "ЖИ ОҚЫТУДЫ ҚАЛАЙ ҚОЛДАНУ КЕРЕК";
+            
+            changeLangBtn.innerText = "ТІЛДІ АУЫСТЫРУ";
+            pdfTitle.innerText = "Өнеркәсіптік қауіпсіздік";
+            btnClosePdf.innerText = "Жабу";
+            
+        } else {
+            currentPdfLink = CONFIG.linkRu;
+            
+            // Перевод на Русский (возврат)
+            menuTitle.innerText = "МАТЕРИАЛЫ";
+            menuSubtitle.innerText = "ВЫБЕРИТЕ ФОРМАТ";
+            
+            headingPres.innerText = "СМОТРЕТЬ ПРЕЗЕНТАЦИЮ";
+            btnPresentation.innerText = "СМОТРЕТЬ ПРЕЗЕНТАЦИЮ";
+
+            headingAI.innerText = "ОБУЧЕНИЕ ПРИ ПОМОЩИ ИИ";
+            btnAiLink.innerText = "ОБУЧЕНИЕ ПРИ ПОМОЩИ ИИ";
+            btnAiVideo.innerText = "КАК ПОЛЬЗОВАТЬСЯ ОБУЧЕНИЕМ ИИ";
+            
+            changeLangBtn.innerText = "СМЕНИТЬ ЯЗЫК";
+            pdfTitle.innerText = "Промышленная безопасность";
+            btnClosePdf.innerText = "Закрыть";
+        }
+        
+        langScreen.classList.add('hidden');
+        menuScreen.classList.remove('hidden');
+    }
+
+    // 3. Вернуться к выбору языка
+    function returnToLang() {
+        menuScreen.classList.add('hidden');
+        langScreen.classList.remove('hidden');
+        // Перезапуск анимации
+        const card = langScreen.querySelector('.glass-card');
+        card.classList.remove('fade-in');
+        void card.offsetWidth; 
+        card.classList.add('fade-in');
     }
 
     passInput.addEventListener('keypress', function (e) {
@@ -433,9 +567,8 @@
         }, 2000);
     }
 
-    // Открытие PDF (всегда русская версия)
     function openPdfViewer() {
-        pdfFrame.src = CONFIG.linkRu;
+        pdfFrame.src = currentPdfLink;
         menuScreen.classList.add('hidden');
         pdfScreen.classList.remove('hidden');
     }
